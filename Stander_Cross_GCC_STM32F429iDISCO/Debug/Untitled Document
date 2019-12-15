@@ -1,0 +1,110 @@
+Open On-Chip Debugger 0.10.0
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+adapter speed: 2000 kHz
+adapter_nsrst_delay: 100
+none separate
+srst_only separate srst_nogate srst_open_drain connect_deassert_srst
+Started by GNU ARM Eclipse
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : clock speed 1800 kHz
+Info : STLINK v2 JTAG v28 API v2 SWIM v0 VID 0x0483 PID 0x3748
+Info : using stlink api v2
+Info : Target voltage: 2.871579
+Info : stm32f4x.cpu: hardware has 6 breakpoints, 4 watchpoints
+Info : accepting 'gdb' connection on tcp/3333
+Info : device id = 0x10036419
+Info : flash size = 2048kbytes
+Info : Dual Bank 2048 kiB STM32F42x/43x/469/479 found
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+adapter speed: 1800 kHz
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08010bfc msp: 0x20030000
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+semihosting is enabled
+Info : Auto-detected RTOS: FreeRTOS
+Error: Error reading first thread item location in FreeRTOS thread list
+Error: Error reading first thread item location in FreeRTOS thread list
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+adapter speed: 1800 kHz
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08010bfc msp: 0x20030000, semihosting
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+Info : Unable to match requested speed 8000 kHz, using 4000 kHz
+adapter speed: 4000 kHz
+target halted due to breakpoint, current mode: Thread 
+xPSR: 0x61000000 pc: 0x20000046 msp: 0x20030000, semihosting
+Warn : keep_alive() was not invoked in the 1000ms timelimit. GDB alive packet not sent! (1574). Workaround: increase "set remotetimeout" in GDB
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+adapter speed: 1800 kHz
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08010bfc msp: 0x20030000, semihosting
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+Info : Unable to match requested speed 2000 kHz, using 1800 kHz
+adapter speed: 1800 kHz
+target halted due to debug-request, current mode: Thread 
+xPSR: 0x01000000 pc: 0x08010bfc msp: 0x20030000, semihosting
+===== arm v7m registers
+(0) r0 (/32): 0x00000000
+(1) r1 (/32): 0x00000000
+(2) r2 (/32): 0x00000000
+(3) r3 (/32): 0x00000000
+(4) r4 (/32): 0x00000000
+(5) r5 (/32): 0x00000000
+(6) r6 (/32): 0x00000000
+(7) r7 (/32): 0x00000000
+(8) r8 (/32): 0x00000000
+(9) r9 (/32): 0x00000000
+(10) r10 (/32): 0x00000000
+(11) r11 (/32): 0x00000000
+(12) r12 (/32): 0x00000000
+(13) sp (/32): 0x20030000
+(14) lr (/32): 0xFFFFFFFF
+(15) pc (/32): 0x08010BFC
+(16) xPSR (/32): 0x01000000
+(17) msp (/32): 0x20030000
+(18) psp (/32): 0x00000000
+(19) primask (/1): 0x00
+(20) basepri (/8): 0x00
+(21) faultmask (/1): 0x00
+(22) control (/2): 0x00
+(23) d0 (/64): 0x0000000000000000
+(24) d1 (/64): 0x0000000000000000
+(25) d2 (/64): 0x0000000000000000
+(26) d3 (/64): 0x0000000000000000
+(27) d4 (/64): 0x0000000000000000
+(28) d5 (/64): 0x0000000000000000
+(29) d6 (/64): 0x0000000000000000
+(30) d7 (/64): 0x0000000000000000
+(31) d8 (/64): 0x0000000000000000
+(32) d9 (/64): 0x0000000000000000
+(33) d10 (/64): 0x0000000000000000
+(34) d11 (/64): 0x0000000000000000
+(35) d12 (/64): 0x0000000000000000
+(36) d13 (/64): 0x0000000000000000
+(37) d14 (/64): 0x0000000000000000
+(38) d15 (/64): 0x0000000000000000
+(39) fpscr (/32): 0x00000000
+===== Cortex-M DWT registers
+(40) dwt_ctrl (/32)
+(41) dwt_cyccnt (/32)
+(42) dwt_0_comp (/32)
+(43) dwt_0_mask (/4)
+(44) dwt_0_function (/32)
+(45) dwt_1_comp (/32)
+(46) dwt_1_mask (/4)
+(47) dwt_1_function (/32)
+(48) dwt_2_comp (/32)
+(49) dwt_2_mask (/4)
+(50) dwt_2_function (/32)
+(51) dwt_3_comp (/32)
+(52) dwt_3_mask (/4)
+(53) dwt_3_function (/32)
