@@ -1,0 +1,60 @@
+Change Component Footprint: Designator=R55 Old Footprint=R0603 New Footprint=0402s
+Change Component Footprint: Designator=R56 Old Footprint=R0603 New Footprint=0402s
+Added Component: Designator=ISP(HDR1X7)
+Added Component: Designator=R11(0402s)
+Added Component: Designator=R12(0402s)
+Added Component: Designator=R20(0402s)
+Added Pin To Net: NetName=GND Pin=ISP-1
+Added Pin To Net: NetName=VCC_NRF Pin=ISP-7
+Added Pin To Net: NetName=3.3V Pin=R20-2
+Added Pin To Net: NetName=NetR11_1 Pin=R11-1
+Added Pin To Net: NetName=NetR11_1 Pin=R12-1
+Added Pin To Net: NetName=NetR11_1 Pin=R20-1
+Added Pin To Net: NetName=NetR11_1 Pin=S1-1
+Added Net: Name=NetR11_1
+Added Pin To Net: NetName=P0.0 Pin=U1-32
+Added Net: Name=P0.0
+Added Pin To Net: NetName=P0.1 Pin=U1-1
+Added Net: Name=P0.1
+Added Pin To Net: NetName=P0.2 Pin=U1-5
+Added Net: Name=P0.2
+Added Pin To Net: NetName=P0.3 Pin=U1-7
+Added Net: Name=P0.3
+Added Pin To Net: NetName=P0.4 Pin=U1-10
+Added Net: Name=P0.4
+Added Pin To Net: NetName=P0.5 Pin=ISP-3
+Added Pin To Net: NetName=P0.5 Pin=U1-11
+Added Net: Name=P0.5
+Added Pin To Net: NetName=P0.6 Pin=U1-12
+Added Net: Name=P0.6
+Added Pin To Net: NetName=P0.7 Pin=ISP-4
+Added Pin To Net: NetName=P0.7 Pin=U1-13
+Added Net: Name=P0.7
+Added Pin To Net: NetName=P1.0 Pin=ISP-5
+Added Pin To Net: NetName=P1.0 Pin=U1-14
+Added Net: Name=P1.0
+Added Pin To Net: NetName=P1.1 Pin=ISP-6
+Added Pin To Net: NetName=P1.1 Pin=U1-15
+Added Net: Name=P1.1
+Added Pin To Net: NetName=P1.2 Pin=U1-16
+Added Net: Name=P1.2
+Added Pin To Net: NetName=P1.3 Pin=U1-17
+Added Net: Name=P1.3
+Added Pin To Net: NetName=P1.4 Pin=U1-18
+Added Net: Name=P1.4
+Added Pin To Net: NetName=P1.5 Pin=U1-28
+Added Net: Name=P1.5
+Added Pin To Net: NetName=P1.6 Pin=U1-29
+Added Net: Name=P1.6
+Added Pin To Net: NetName=PROG Pin=ISP-2
+Added Pin To Net: NetName=PROG Pin=R13-2
+Added Pin To Net: NetName=PROG Pin=U1-6
+Added Net: Name=PROG
+Added Pin To Net: NetName=REST Pin=R11-2
+Added Pin To Net: NetName=REST Pin=U1-19
+Added Net: Name=REST
+Added Member To Class: ClassName=RFID_Tag Member=Component ISP Header 7
+Added Member To Class: ClassName=RFID_Tag Member=Component R11 NC
+Added Member To Class: ClassName=RFID_Tag Member=Component R12 NC
+Added Member To Class: ClassName=RFID_Tag Member=Component R20 1K
+Added Room: Name=RFID_Tag

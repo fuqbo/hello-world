@@ -1,0 +1,9 @@
+Added Component: Designator=L1(0402s)
+Added Component: Designator=L3(0402s)
+Added Pin To Net: NetName=NetL1_1 Pin=L1-1
+Added Pin To Net: NetName=NetL1_2 Pin=L1-2
+Added Pin To Net: NetName=NetL1_2 Pin=L3-1
+Added Pin To Net: NetName=NetC5_2 Pin=L3-2
+Added Member To Class: ClassName=RFID_Tag Member=Component L1 Murata LQP15MN6N8B02D
+Added Member To Class: ClassName=RFID_Tag Member=Component L3 Murata LQP15MN4N7B02D
+Added Room: Name=RFID_Tag

@@ -1,0 +1,18 @@
+Added Component: Designator=LD1(DYS0805LED)
+Added Component: Designator=LD2(DYS0805LED)
+Added Component: Designator=R55(R0603)
+Added Component: Designator=R56(R0603)
+Added Component: Designator=S1(4x4x1.5ÌùÆ¬)
+Added Pin To Net: NetName=NetLD1_2 Pin=LD1-2
+Added Pin To Net: NetName=NetLD2_2 Pin=LD2-2
+Added Pin To Net: NetName=NetLD1_2 Pin=R55-1
+Added Pin To Net: NetName=LED_GN Pin=R55-2
+Added Pin To Net: NetName=NetLD2_2 Pin=R56-1
+Added Pin To Net: NetName=LED_RD Pin=R56-2
+Added Pin To Net: NetName=3.3V Pin=LD1-1
+Added Pin To Net: NetName=3.3V Pin=LD2-1
+Added Net: Name=3.3V
+Added Pin To Net: NetName=GND Pin=S1-2
+Added Net: Name=GND
+Added Class: Name=RFID_Tag
+Added Room: Name=RFID_Tag

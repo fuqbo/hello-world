@@ -1,0 +1,9 @@
+Added Component: Designator=C11(0402s)
+Added Component: Designator=R1(0402s)
+Added Pin To Net: NetName=VCC_NRF Pin=C11-1
+Added Pin To Net: NetName=GND Pin=C11-2
+Added Pin To Net: NetName=NetR1_1 Pin=R1-1
+Added Pin To Net: NetName=GND Pin=R1-2
+Added Member To Class: ClassName=RFID_Tag Member=Component C11 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component R1 1%
+Added Room: Name=RFID_Tag

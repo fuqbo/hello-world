@@ -1,0 +1,459 @@
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 1   
+
+
+C51 COMPILER V9.56.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: D:\Keil_V5\C51\BIN\C51.EXE main.c OMF2 OPTIMIZE(8,SPEED) BROWSE DEBUG TABS(2)
+
+line level    source
+
+   1          /*********************************************************************
+   2          
+   3          π¶ƒ‹:
+   4            RFID÷˜∂¡–¥∆˜∂¡–¥≥Ã–Ú
+   5          
+   6          Àµ√˜:
+   7            1.Õ®π˝¥Æø⁄…œ±®÷˜∂¡–¥∆˜”Î¥”∂¡–¥∆˜ ∂±µΩµƒ±Í«©–≈œ¢
+   8            2.œÚ±Í«©œ¬∑¢–›√ﬂ/ªΩ–—÷∏¡Ó,«–ªª±Í«©π§◊˜◊¥Ã¨
+   9            3.œÚ±Í«©œ¬∑¢…‰∆µ–≈∫≈«ø∂»≈‰÷√÷∏¡Ó,µ˜Ω⁄±Í«©–≈∫≈∑¢…‰æ‡¿Î
+  10            4.Õ®π˝SPIΩ” ‹¥”∂¡–¥ƒ£øÈ ∂±µΩµƒ±Í«©ID–≈œ¢
+  11          
+  12          //P0.4, RXD, set as input
+  13          //P0.3, TXD, set as output
+  14          
+  15          **********************************************************************/
+  16          
+  17          #include <Nordic\reg24le1.h>
+  18          #include <stdint.h>
+  19          #include "API.h"
+  20          #include <absacc.h>
+  21          
+  22          #define PIN32
+  23          
+  24          #ifdef  PIN32
+  25          sbit  spi_cs= P0^6;
+  26          sbit LED4 = P0^6;      
+  27          sbit  spi_cs_slave=P1^1;   
+  28          
+  29          #define p0dir 0xb0
+  30          #define p1dir 0xf3
+  31          #endif
+  32          
+  33          #define INTERRUPT_RFIRQ 9
+  34          #define TX_ADR_WIDTH    8           // RF ’∑¢µÿ÷∑π≤8 bytes 
+  35          #define TX_PLOAD_WIDTH  32            //  ˝æ›∞¸≥§∂»Œ™9 bytes
+  36          
+  37          uint8_t const TX_ADDRESS[TX_ADR_WIDTH]  = {0xD0,0xEC,0xC8,0xB5,0xC7,0xBF,0x51,0x51}; // ∂®“ÂRF ’∑¢µÿ÷∑
+  38          uint8_t const RX_ADDRESS[TX_ADR_WIDTH]  = {0xD2,0xF8,0xD0,0xD0,0xBD,0xA3,0xBF,0xCD}; // ∂®“ÂRF ’∑¢µÿ÷∑0
+  39          //uint8_t const RX_ADDRESS_P1[TX_ADR_WIDTH]  = {0xD2,0xF8,0xD0,0xD0,0xBD,0xA3,0x11,0x11}; // ∂®“ÂRF ’∑¢µÿ÷
+             -∑1
+  40          
+  41          uint8_t data rx_buf[TX_PLOAD_WIDTH];
+  42          uint8_t data tx_buf[9]={0x99};
+  43          //uint8_t data_buf[10]  = {0x00,0x01,0x00,0x01,0x00,0x04,0x03,0x02,0x01,0x00};  //–¥»ÎNVN¥Ê¥¢«¯”Úµƒ ˝æ›
+  44          
+  45          uint8_t bdata sta;
+  46          sbit  RX_DR =sta^6;
+  47          sbit  TX_DS =sta^5;
+  48          sbit  MAX_RT  =sta^4;
+  49          
+  50          /**************************************************
+  51          π¶ƒ‹£∫—” ±
+  52          **************************************************/
+  53          void delay(uint16_t x)
+  54          {
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 2   
+
+  55   1          uint16_t i,j;
+  56   1          i=0;
+  57   1          for(i=0;i<x;i++)
+  58   1          {
+  59   2             j=108;
+  60   2                 ;
+  61   2             while(j--);
+  62   2          }
+  63   1      }
+  64          /**************************************************
+  65          π¶ƒ‹£∫”≤º˛SPI∂¡–¥
+  66          **************************************************/
+  67          uint8_t SPI_RW(uint8_t value)
+  68          {
+  69   1        SPIRDAT = value;
+  70   1                                     
+  71   1        while(!(SPIRSTAT & 0x02));            // µ»¥˝SPI¥´ ‰ÕÍ≥…
+  72   1      
+  73   1        return SPIRDAT;                       // ∑µªÿ∂¡≥ˆ÷µ
+  74   1      }
+  75          /**************************************************
+  76          π¶ƒ‹£∫–¥RFºƒ¥Ê∆˜£¨∂¡RF◊¥Ã¨÷µ
+  77          **************************************************/
+  78          uint8_t SPI_RW_Reg(uint8_t reg, uint8_t value)
+  79          {
+  80   1        uint8_t status;
+  81   1      
+  82   1          RFCSN = 0;                    
+  83   1          status = SPI_RW(reg);               // —°‘ÒRFºƒ¥Ê∆˜
+  84   1          SPI_RW(value);                      // –¥»Î ˝æ›
+  85   1          RFCSN = 1;                    
+  86   1      
+  87   1          return(status);                     // ∑µªÿRF◊¥Ã¨÷µ
+  88   1      }
+  89          /**************************************************
+  90          π¶ƒ‹£∫∂¡RFºƒ¥Ê∆˜
+  91          **************************************************/
+  92          uint8_t SPI_Read(uint8_t reg)
+  93          {
+  94   1        uint8_t reg_val;
+  95   1      
+  96   1          RFCSN = 0;                      
+  97   1          SPI_RW(reg);                      // —°‘ÒRFºƒ¥Ê∆˜
+  98   1          reg_val = SPI_RW(0);              // ∂¡≥ˆ ˝æ›
+  99   1          RFCSN = 1;                      
+ 100   1      
+ 101   1          return(reg_val);                  // ∑µªÿRF◊¥Ã¨÷µ
+ 102   1      }
+ 103          /**************************************************
+ 104          π¶ƒ‹£∫∂¡RFºƒ¥Ê∆˜∂‡◊÷Ω⁄ ˝æ›µΩª∫≥Â«¯
+ 105          **************************************************/
+ 106          uint8_t SPI_Read_Buf(uint8_t reg, uint8_t *pBuf, uint8_t bytes)
+ 107          {
+ 108   1        uint8_t status,byte_ctr;
+ 109   1      
+ 110   1          RFCSN = 0;                        
+ 111   1          status = SPI_RW(reg);               // —°‘ÒRFºƒ¥Ê∆˜
+ 112   1      
+ 113   1          for(byte_ctr=0;byte_ctr<bytes;byte_ctr++)
+ 114   1            pBuf[byte_ctr] = SPI_RW(0);         // ¡¨Ω”∂¡≥ˆ ˝æ›
+ 115   1      
+ 116   1          RFCSN = 1;                          
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 3   
+
+ 117   1      
+ 118   1          return(status);                         // ∑µªÿRF◊¥Ã¨÷µ
+ 119   1      }
+ 120          /**************************************************
+ 121          π¶ƒ‹£∫∞—ª∫≥Â«¯µƒ∂‡◊÷Ω⁄ ˝æ›–¥µΩRFºƒ¥Ê∆˜
+ 122          **************************************************/
+ 123          uint8_t SPI_Write_Buf(uint8_t reg, uint8_t *pBuf, uint8_t bytes)
+ 124          {
+ 125   1        uint8_t status,byte_ctr;
+ 126   1      
+ 127   1          RFCSN = 0;                      
+ 128   1          status = SPI_RW(reg);             // —°‘ÒRFºƒ¥Ê∆˜
+ 129   1          for(byte_ctr=0; byte_ctr<bytes; byte_ctr++) // ¡¨Ω”–¥»Î ˝æ›
+ 130   1            SPI_RW(*pBuf++);
+ 131   1          RFCSN = 1;                      
+ 132   1          return(status);                   // ∑µªÿRF◊¥Ã¨÷µ
+ 133   1      }
+ 134          
+ 135          /**************************************************
+ 136          π¶ƒ‹£∫…Ë÷√Œ™Ω” ’ƒ£ Ω
+ 137          **************************************************/
+ 138          void RX_Mode(void)
+ 139          {
+ 140   1        RFCE=0;
+ 141   1          SPI_RW_Reg(WRITE_REG + CONFIG, 0x0f);     // …œµÁ, CRCŒ™2 bytes,Ω” ’ƒ£ Ω,‘ –ÌRX_DR≤˙…˙÷–∂œ
+ 142   1          RFCE = 1;                   // ∆Ù∂ØΩ” ’ƒ£ Ω
+ 143   1      }
+ 144          
+ 145          /**************************************************
+ 146          π¶ƒ‹£∫…Ë÷√Œ™∑¢…‰ƒ£ Ω
+ 147          **************************************************/
+ 148          void TX_Mode(void)
+ 149          {
+ 150   1          RFCE=0;
+ 151   1          SPI_RW_Reg(WRITE_REG + CONFIG, 0x0e);           // …œµÁ, CRCŒ™2 bytes,Ω” ’ƒ£ Ω,‘ –ÌRX_DR≤˙…˙÷–∂œ
+ 152   1          
+ 153   1        SPI_Write_Buf(WR_TX_PLOAD, tx_buf, TX_PLOAD_WIDTH); // –¥ ˝æ›µΩFIFO
+ 154   1        RFCE=1;                       // ∆Ù∂Ø∑¢…‰                                       
+ 155   1      }
+ 156          
+ 157          /**************************************************
+ 158          π¶ƒ‹£∫RF≥ı ºªØ
+ 159          **************************************************/
+ 160          void rf_init(void)
+ 161          {
+ 162   1          RFCE = 0;                                       // RFπÿ±’
+ 163   1          RFCKEN = 1;                                     // ∆Ù∂ØRF ±÷”
+ 164   1          RF = 1;                                         // ‘ –ÌRF÷–∂œ
+ 165   1      
+ 166   1        delay(1000);
+ 167   1      
+ 168   1          SPI_Write_Buf(WRITE_REG + TX_ADDR, TX_ADDRESS, TX_ADR_WIDTH);     // …Ë÷√∑¢…‰µÿ÷∑≥§∂»
+ 169   1          SPI_Write_Buf(WRITE_REG + RX_ADDR_P0, RX_ADDRESS, TX_ADR_WIDTH);  // …Ë÷√Ω” ’µÿ÷∑0≥§∂»
+ 170   1      //  SPI_Write_Buf(WRITE_REG + RX_ADDR_P1, RX_ADDRESS_P1, TX_ADR_WIDTH);   // …Ë÷√Ω” ’µÿ÷∑1≥§∂»
+ 171   1      
+ 172   1        SPI_RW_Reg(WRITE_REG + RX_PW_P0, TX_PLOAD_WIDTH);   // PIPE0 Ω” ’ ˝æ›∞¸≥§∂» 
+ 173   1      //  SPI_RW_Reg(WRITE_REG + RX_PW_P1, TX_PLOAD_WIDTH);   // PIPE1 Ω” ’ ˝æ›∞¸≥§∂» 
+ 174   1      
+ 175   1          SPI_RW_Reg(WRITE_REG + EN_AA, 0x03);            // ∆Ù∂Ø◊‘∂Ø”¶¥π¶ƒ‹
+ 176   1          SPI_RW_Reg(WRITE_REG + EN_RXADDR, 0x03);        // PIPEΩ” ’ ˝æ›
+ 177   1          SPI_RW_Reg(WRITE_REG + SETUP_RETR, 0x1a);       // ◊‘∂Ø÷ÿ¥´10¥Œ
+ 178   1          SPI_RW_Reg(WRITE_REG + RF_CH, 40);              // RF∆µ¬ 2440MHz
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 4   
+
+ 179   1          SPI_RW_Reg(WRITE_REG + RF_SETUP, 0x0f);         // ∑¢…‰π¶¬ 0dBm, ¥´ ‰ÀŸ¬ 2Mbps,
+ 180   1            
+ 181   1      } 
+ 182          
+ 183          /**************************************************
+ 184          π¶ƒ‹£∫RF÷–∂œ∑˛ŒÒ≥Ã–Ú
+ 185          **************************************************/
+ 186          void RF_IRQ(void) interrupt INTERRUPT_RFIRQ
+ 187          {
+ 188   1        sta=SPI_Read(STATUS);               // ∂¡≥ˆ◊¥Ã¨÷µ
+ 189   1      
+ 190   1        if(RX_DR)                 
+ 191   1        {
+ 192   2          SPI_Read_Buf(RD_RX_PLOAD,rx_buf,TX_PLOAD_WIDTH);// ∂¡≥ˆFIFOµƒ ˝æ›
+ 193   2          SPI_RW_Reg(FLUSH_RX,0);             // «Â≥˝RXµƒFIFO
+ 194   2        }
+ 195   1      
+ 196   1        SPI_RW_Reg(WRITE_REG+STATUS,0x70);          // «Â≥˝À˘”–÷–∂œ±Í÷æ 
+ 197   1      }
+ 198          /**************************************************
+ 199          π¶ƒ‹£∫¥Æø⁄≥ı ºªØ◊”≥Ã–Ú
+ 200          Àµ√˜£∫≤®Ãÿ¬ 9600£¨ π”√ƒ⁄≤ø≤®Ãÿ¬ ∑¢…˙∆˜
+ 201          
+ 202          ≤®Ãÿ¬       S0REL
+ 203          
+ 204          600          0x00BF
+ 205          1200         0X025F
+ 206          2400         0X0330
+ 207          4800         0X0398
+ 208          9600         0X03CC
+ 209          19200        0X03E6
+ 210          38400        0X03F3
+ 211          
+ 212          **************************************************/
+ 213          void uart_init(void)
+ 214          {
+ 215   1          ES0 = 0;                              // πÿUART0÷–∂œ
+ 216   1          REN0 = 1;                             // ‘ –ÌΩ” ’
+ 217   1          SM0 = 0;                              // ¥Æø⁄ƒ£ Ω1£¨8bitø…±‰≤®Ãÿ¬ 
+ 218   1          SM1 = 1;                   
+ 219   1          PCON |= 0x80;                         // SMOD = 1
+ 220   1        
+ 221   1          ADCON |= 0x80;                        // —°‘Òƒ⁄≤ø≤®Ãÿ¬ ∑¢…˙∆˜
+ 222   1          S0RELL = 0xF3;                        // ≤®Ãÿ¬ 38400
+ 223   1          S0RELH = 0x03;                
+ 224   1          TI0 = 0;                    // «Â∑¢ÀÕÕÍ≥…±Í÷æ
+ 225   1          RI0=0;                       // «ÂΩ” ’ÕÍ≥…±Í÷æ
+ 226   1          S0BUF=0x00;                   // ÀÕ≥ı÷µ
+ 227   1      }
+ 228          /**************************************************
+ 229          π¶ƒ‹£∫œÚ¥Æø⁄∑¢ÀÕ1 byte ˝æ›
+ 230          **************************************************/
+ 231          void uart_putchar(uint8_t x)
+ 232          {
+ 233   1        while (!TI0);               // µ»¥˝∑¢ÀÕÕÍ≥…
+ 234   1        TI0=0;                    // «Â∑¢ÀÕÕÍ≥…±Í÷æ
+ 235   1        S0BUF=x;                  // ∑¢ÀÕ ˝æ›
+ 236   1      }
+ 237          
+ 238          /**************************************************
+ 239          π¶ƒ‹£∫¥Æø⁄Ω” ’1 byte ˝æ›
+ 240          **************************************************/
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 5   
+
+ 241          //uint8_t uart_receive_char(uint8_t x)
+ 242          //{
+ 243          //  while (!RI0);   // µ»¥˝∑¢ÀÕÕÍ≥…
+ 244          //  RI0=0;      // «Â∑¢ÀÕÕÍ≥…±Í÷æ
+ 245          //  x=S0BUF;    // ∑¢ÀÕ ˝æ›
+ 246          //  return  x;
+ 247          //}
+ 248          
+ 249          /**************************************************
+ 250          π¶ƒ‹:I/Oø⁄≥ı ºªØ
+ 251          **************************************************/
+ 252          void io_init(void)
+ 253          {
+ 254   1          P0DIR = p0dir;                  // …Ë∂®I/Oø⁄ ‰»Î ‰≥ˆ
+ 255   1          P1DIR = p1dir;          
+ 256   1        delay(1000);               
+ 257   1      }  
+ 258          
+ 259          
+ 260          /**************************************************
+ 261          π¶ƒ‹£∫÷˜≥Ã–Ú
+ 262          **************************************************/
+ 263          void main(void)
+ 264          {
+ 265   1          uint8_t readerid=0x08;
+ 266   1      
+ 267   1        //Ω” ’µΩ¥Æø⁄œ¬∑¢µƒ÷∏¡Ó:0xdd 0x**«–ªª±Í«©π§◊˜◊¥Ã¨ªÚ≈‰÷√±Í«©…‰∆µ–≈∫≈«ø∂»  
+ 268   1        uint8_t yy[2]={0xff,0xff} ;   
+ 269   1        uint8_t  ii, j=0,  kk[2]={0,0}, tagpower[2]={0x0f,0x0f}, m=0, n=0;
+ 270   1        ii=0;
+ 271   1          
+ 272   1        io_init();                  // I/Oø⁄≥ı ºªØ
+ 273   1        uart_init();                // ¥Æø⁄≥ı ºªØ   38400
+ 274   1        rf_init();                  // RF≥ı ºªØ                            
+ 275   1        EA=1;                     // ‘ –Ì÷–∂œ                          
+ 276   1      
+ 277   1        RX_Mode();     //Ω¯»ÎΩ” ’ƒ£ Ω
+ 278   1        //SPI≈‰÷√ 
+ 279   1        SPIMCON0 = 0xF1;        //    6   5   4   3   2   1   0 
+ 280   1                 // 1 0 0 0 0 0 1
+ 281   1        SPISCON0 = 0xA1;        //    7 6   5   4   3   2   1   0 
+ 282   1                      //  1 0 1 0 0 0 0 1
+ 283   1        
+ 284   1        
+ 285   1        while(1)
+ 286   1        {
+ 287   2      //      rtc2_off();               // πÿRTC2 
+ 288   2          
+ 289   2        //    RX_Mode();     //Ω¯»ÎΩ” ’ƒ£ Ω
+ 290   2          /***********************¥Æø⁄Ω” ’∏˜¿‡÷∏¡Ó**********************/
+ 291   2      //    if (RI0=1)
+ 292   2      //    {
+ 293   2      //       RI0=0;     // «Â∑¢ÀÕÕÍ≥…±Í÷æ
+ 294   2      //       yy[ii]=S0BUF;
+ 295   2      //       ii++;
+ 296   2      //       if (ii>=2) ii=0;
+ 297   2      //    }
+ 298   2      
+ 299   2      
+ 300   2          /***********0xdd 0x11/0x22 : Ω” ’ªΩ–—/–›√ﬂ◊¥Ã¨±‰∏¸÷∏¡Ó£¨≤¢œ¬∑¢◊¥Ã¨±‰∏¸÷∏¡Ó∏¯TAG**********/
+ 301   2          /**0xdd 0x09(0dBm)/0x0b(-6dBm)/0x0d(-12dBm)/0x0f(-18dBm) :Ω” ’…‰∆µ∑¢…‰π¶¬ ≈‰÷√÷∏¡Ó£¨≤¢œ¬∑¢…‰∆µπ¶¬ ≈‰÷√∏¯
+             -±Í«©**/
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 6   
+
+ 302   2      //    if(yy[0]==0xdd)
+ 303   2      //    {
+ 304   2      //        if(yy[1]!=0)
+ 305   2      //          {
+ 306   2      //             tx_buf[0]=yy[1];
+ 307   2      //         if(tx_buf[0]!=0xdd)
+ 308   2      //         {
+ 309   2      //               for(j=0;j<180;j++)
+ 310   2      //               {
+ 311   2      //                 TX_Mode();               // ∑¢…‰ ˝æ›
+ 312   2      //                 while (!(TX_DS|MAX_RT));       // µ»¥˝∑¢…‰Ω· ¯
+ 313   2      //                 sta = 0;
+ 314   2      //               }
+ 315   2      //               RX_Mode();
+ 316   2      //              }
+ 317   2      //       } 
+ 318   2      //    } 
+ 319   2      
+ 320   2      //    if(yy[1]==0xdd)
+ 321   2      //    {
+ 322   2      //        if(yy[0]!=0)
+ 323   2      //          {
+ 324   2      //             tx_buf[0]=yy[0];
+ 325   2      //         if(tx_buf[0]!=0xdd)
+ 326   2      //         {
+ 327   2      //               for(j=0;j<180;j++)
+ 328   2      //               {
+ 329   2      //                 TX_Mode();               // ∑¢…‰ ˝æ›
+ 330   2      //                 while (!(TX_DS|MAX_RT));       // µ»¥˝∑¢…‰Ω· ¯
+ 331   2      //                 sta = 0;
+ 332   2      //               }
+ 333   2      //               RX_Mode();
+ 334   2      //             }
+ 335   2      //      }
+ 336   2      //    }      
+ 337   2      
+ 338   2      
+ 339   2          /*****÷±Ω”Ω” ’±Í«©µƒID–≈œ¢,
+ 340   2          ªÚº‰Ω”Õ®π˝SPIΩ” ’¥”∂¡–¥ƒ£øÈSlaveReader ∂±µΩµƒ±Í«©ID–≈œ¢*****/
+ 341   2              {
+ 342   3      //            if (spi_cs_slave==0)
+ 343   3      //              {  
+ 344   3      //                 for(jj=0;jj<52;jj++);
+ 345   3      //               kk[0]= SPISDAT;
+ 346   3      //               //for(jj=0;jj<50;jj++);
+ 347   3      //               //kk[1]=SPISDAT;
+ 348   3      //           
+ 349   3      //           /***********◊È÷°…œ¥´¥Æø⁄************/
+ 350   3      //           uart_putchar(0xFB);   
+ 351   3      //           uart_putchar(0x10);                     
+ 352   3      //             uart_putchar(0);
+ 353   3      //           uart_putchar(0);                        
+ 354   3      //             uart_putchar(kk[0]); 
+ 355   3      //           uart_putchar(kk[1]);                      
+ 356   3      //             uart_putchar(readerid);  
+ 357   3      //           uart_putchar(0x02);  
+ 358   3      //              }
+ 359   3      
+ 360   3              if(RX_DR)               //  ˝æ›“— ’µΩ
+ 361   3              {
+ 362   4                sta=0;
+ 363   4                /***********◊È÷°…œ¥´∏¯¥Æø⁄************/
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 7   
+
+ 364   4      //          uart_putchar(0xFB);
+ 365   4      //          uart_putchar(0x10);                      
+ 366   4      //          uart_putchar(0);  
+ 367   4      //          uart_putchar(0);                       
+ 368   4      //          uart_putchar(rx_buf[0]);  
+ 369   4      //          uart_putchar(rx_buf[1]);                       
+ 370   4      //          uart_putchar(readerid);
+ 371   4      //          uart_putchar(0x01); 
+ 372   4                uart_putchar(0x2A);       
+ 373   4                uart_putchar(0x20);             
+ 374   4                uart_putchar(rx_buf[0]);  
+ 375   4                uart_putchar(rx_buf[1]);
+ 376   4                uart_putchar(rx_buf[2]);
+ 377   4                uart_putchar(rx_buf[3]);
+ 378   4                uart_putchar(rx_buf[4]);
+ 379   4                uart_putchar(rx_buf[5]);
+ 380   4                uart_putchar(rx_buf[6]);
+ 381   4                uart_putchar(rx_buf[7]);
+ 382   4                uart_putchar(rx_buf[8]);
+ 383   4                uart_putchar(rx_buf[9]);
+ 384   4                uart_putchar(rx_buf[10]);         
+ 385   4                uart_putchar(rx_buf[11]);
+ 386   4                uart_putchar(rx_buf[12]);
+ 387   4                uart_putchar(rx_buf[13]);
+ 388   4                uart_putchar(rx_buf[14]); 
+ 389   4                uart_putchar(rx_buf[15]);
+ 390   4                uart_putchar(rx_buf[16]);
+ 391   4                uart_putchar(rx_buf[17]);
+ 392   4                uart_putchar(rx_buf[18]);
+ 393   4                uart_putchar(rx_buf[19]);
+ 394   4                uart_putchar(rx_buf[20]);
+ 395   4                uart_putchar(rx_buf[21]);
+ 396   4                uart_putchar(rx_buf[22]);
+ 397   4                uart_putchar(rx_buf[23]);
+ 398   4                uart_putchar(rx_buf[24]);         
+ 399   4                uart_putchar(rx_buf[25]);
+ 400   4                uart_putchar(rx_buf[26]);
+ 401   4                uart_putchar(rx_buf[27]);         
+ 402   4                uart_putchar(rx_buf[28]);
+ 403   4                uart_putchar(rx_buf[29]);
+ 404   4                uart_putchar(rx_buf[30]);
+ 405   4                uart_putchar(rx_buf[31]);
+ 406   4                uart_putchar(0x7E); 
+ 407   4                uart_putchar(0x7E); 
+ 408   4                uart_putchar(0x7E); 
+ 409   4                
+ 410   4      //          uart_putchar(rx_buf[32]);                     
+ 411   4              } 
+ 412   3          }
+ 413   2              
+ 414   2          //uart_putchar(0x10);   
+ 415   2        } 
+ 416   1      }                     
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    711    ----
+   CONSTANT SIZE    =      6    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     58      21
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.56.0.0   MAIN                                                              08/04/2020 09:45:47 PAGE 8   
+
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

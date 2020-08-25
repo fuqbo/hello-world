@@ -1,0 +1,16 @@
+Removed Pin From Net: NetName=GND Pin=U1-33
+Change Component Footprint: Designator=ISP Old Footprint=HDR1X7 New Footprint=SIP7-20
+Added Component: Designator=P1(SIP10-127)
+Added Pin To Net: NetName=P0.0 Pin=P1-1
+Added Pin To Net: NetName=P0.1 Pin=P1-2
+Added Pin To Net: NetName=P0.2 Pin=P1-3
+Added Pin To Net: NetName=P0.3 Pin=P1-4
+Added Pin To Net: NetName=P0.4 Pin=P1-5
+Added Pin To Net: NetName=P0.6 Pin=P1-6
+Added Pin To Net: NetName=P1.2 Pin=P1-7
+Added Pin To Net: NetName=P1.5 Pin=P1-8
+Added Pin To Net: NetName=P1.6 Pin=P1-9
+Added Pin To Net: NetName=P1.3 Pin=R55-2
+Added Pin To Net: NetName=P1.4 Pin=R56-2
+Added Member To Class: ClassName=RFID_Tag Member=Component P1 Header 10
+Added Room: Name=RFID_Tag

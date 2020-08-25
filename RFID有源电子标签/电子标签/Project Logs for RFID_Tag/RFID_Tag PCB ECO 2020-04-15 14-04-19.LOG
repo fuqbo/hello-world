@@ -1,0 +1,15 @@
+Added Component: Designator=3.3(CR2032µç³Ø×ù£¨Õý¼«£©)
+Added Component: Designator=P1(SIP10-127)
+Added Pin To Net: NetName=VCC_NRF Pin=3.3-1
+Added Pin To Net: NetName=P0.0 Pin=P1-1
+Added Pin To Net: NetName=P0.1 Pin=P1-2
+Added Pin To Net: NetName=P0.2 Pin=P1-3
+Added Pin To Net: NetName=P0.3 Pin=P1-4
+Added Pin To Net: NetName=P0.4 Pin=P1-5
+Added Pin To Net: NetName=P0.6 Pin=P1-6
+Added Pin To Net: NetName=P1.2 Pin=P1-7
+Added Pin To Net: NetName=P1.5 Pin=P1-8
+Added Pin To Net: NetName=P1.6 Pin=P1-9
+Added Member To Class: ClassName=RFID_Tag Member=Component 3.3 Plug
+Added Member To Class: ClassName=RFID_Tag Member=Component P1 Header 10
+Added Room: Name=RFID_Tag

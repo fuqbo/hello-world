@@ -1,0 +1,83 @@
+Added Pin To Net: NetName=GND Pin=C1-1
+Added Pin To Net: NetName=GND Pin=C2-1
+Added Pin To Net: NetName=GND Pin=C3-1
+Added Pin To Net: NetName=GND Pin=C4-1
+Added Pin To Net: NetName=GND Pin=C6-2
+Added Pin To Net: NetName=GND Pin=C7-1
+Added Pin To Net: NetName=GND Pin=C8-1
+Added Pin To Net: NetName=GND Pin=C9-1
+Added Pin To Net: NetName=GND Pin=C10-1
+Added Pin To Net: NetName=GND Pin=C11-2
+Added Pin To Net: NetName=GND Pin=R1-2
+Added Pin To Net: NetName=GND Pin=R13-1
+Added Pin To Net: NetName=GND Pin=U1-8
+Added Pin To Net: NetName=GND Pin=U1-23
+Added Pin To Net: NetName=GND Pin=U1-26
+Added Pin To Net: NetName=GND Pin=X1-2
+Added Pin To Net: NetName=GND Pin=X1-4
+Added Pin To Net: NetName=NetC1_2 Pin=C1-2
+Added Pin To Net: NetName=NetC1_2 Pin=U1-31
+Added Pin To Net: NetName=NetC1_2 Pin=X1-1
+Added Net: Name=NetC1_2
+Added Pin To Net: NetName=NetC2_2 Pin=C2-2
+Added Pin To Net: NetName=NetC2_2 Pin=U1-30
+Added Pin To Net: NetName=NetC2_2 Pin=X1-3
+Added Net: Name=NetC2_2
+Added Pin To Net: NetName=NetC3_2 Pin=C3-2
+Added Pin To Net: NetName=NetC3_2 Pin=C4-2
+Added Pin To Net: NetName=NetC3_2 Pin=L2-1
+Added Pin To Net: NetName=NetC3_2 Pin=U1-20
+Added Net: Name=NetC3_2
+Added Pin To Net: NetName=NetC5_1 Pin=C5-1
+Added Pin To Net: NetName=NetC5_1 Pin=C6-1
+Added Net: Name=NetC5_1
+Added Pin To Net: NetName=NetC5_2 Pin=C5-2
+Added Pin To Net: NetName=NetC5_2 Pin=L3-2
+Added Net: Name=NetC5_2
+Added Pin To Net: NetName=NetC7_2 Pin=C7-2
+Added Pin To Net: NetName=NetC7_2 Pin=U1-3
+Added Net: Name=NetC7_2
+Added Pin To Net: NetName=NetC8_2 Pin=C8-2
+Added Pin To Net: NetName=NetC8_2 Pin=U1-4
+Added Net: Name=NetC8_2
+Added Pin To Net: NetName=NetL1_1 Pin=L1-1
+Added Pin To Net: NetName=NetL1_1 Pin=L2-2
+Added Pin To Net: NetName=NetL1_1 Pin=U1-21
+Added Net: Name=NetL1_1
+Added Pin To Net: NetName=NetL1_2 Pin=L1-2
+Added Pin To Net: NetName=NetL1_2 Pin=L3-1
+Added Pin To Net: NetName=NetL1_2 Pin=U1-22
+Added Net: Name=NetL1_2
+Added Pin To Net: NetName=NetR1_1 Pin=R1-1
+Added Pin To Net: NetName=NetR1_1 Pin=U1-25
+Added Net: Name=NetR1_1
+Added Pin To Net: NetName=NetR13_2 Pin=R13-2
+Added Pin To Net: NetName=NetR13_2 Pin=U1-6
+Added Net: Name=NetR13_2
+Added Pin To Net: NetName=VCC_NRF Pin=C9-2
+Added Pin To Net: NetName=VCC_NRF Pin=C10-2
+Added Pin To Net: NetName=VCC_NRF Pin=C11-1
+Added Pin To Net: NetName=VCC_NRF Pin=U1-2
+Added Pin To Net: NetName=VCC_NRF Pin=U1-9
+Added Pin To Net: NetName=VCC_NRF Pin=U1-24
+Added Pin To Net: NetName=VCC_NRF Pin=U1-27
+Added Net: Name=VCC_NRF
+Added Member To Class: ClassName=RFID_Tag Member=Component C1 NP0 50V
+Added Member To Class: ClassName=RFID_Tag Member=Component C2 NP0 50V
+Added Member To Class: ClassName=RFID_Tag Member=Component C3 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component C4 NP0 50V
+Added Member To Class: ClassName=RFID_Tag Member=Component C5 NP0 +/-0.1pF, 50V
+Added Member To Class: ClassName=RFID_Tag Member=Component C6 NP0 +/-0.1pF, 50V
+Added Member To Class: ClassName=RFID_Tag Member=Component C7 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component C8 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component C9 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component C10 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component C11 X7R 16V
+Added Member To Class: ClassName=RFID_Tag Member=Component L1 Murata LQP15MN6N8B02D
+Added Member To Class: ClassName=RFID_Tag Member=Component L2 Murata LQP15MN6N8B02D
+Added Member To Class: ClassName=RFID_Tag Member=Component L3 Murata LQP15MN4N7B02D
+Added Member To Class: ClassName=RFID_Tag Member=Component R1 1%
+Added Member To Class: ClassName=RFID_Tag Member=Component R13 
+Added Member To Class: ClassName=RFID_Tag Member=Component U1 QFN32 5x5 package
+Added Member To Class: ClassName=RFID_Tag Member=Component X1 TSX-3225, 16MHz, Cl=9pF, +/-10ppm
+Added Room: Name=RFID_Tag
